@@ -1,0 +1,30 @@
+package com.example.trabalhofinal.data;
+
+import androidx.lifecycle.LiveData;
+import androidx.room.Dao;
+import androidx.room.Insert;
+import androidx.room.Query;
+import androidx.room.Update;
+
+import java.util.List;
+
+@Dao
+public interface AppDao {
+    @Insert
+    void insertUser(User user);
+
+    @Query("SELECT * FROM users WHERE email = :email AND password = :password LIMIT 1")
+    User login(String email, String password);
+
+    @Insert
+    long insertMedication(Medication medication);
+
+    @Query("SELECT * FROM medications")
+    LiveData<List<Medication>> getAllMedications();
+
+    @Insert
+    void insertHistory(History history);
+
+    @Query("SELECT * FROM history ORDER BY confirmationTime DESC")
+    LiveData<List<History>> getHistory();
+}
