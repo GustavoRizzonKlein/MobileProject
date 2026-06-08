@@ -1,16 +1,23 @@
 package com.example.trabalhofinal.ui;
 
+import android.app.AlertDialog;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.trabalhofinal.R;
+import com.example.trabalhofinal.data.AppDatabase;
 import com.example.trabalhofinal.data.Medication;
 import com.example.trabalhofinal.databinding.ItemMedicationBinding;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.ViewHolder> {
 
@@ -35,6 +42,29 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
         holder.binding.tvMedName.setText(medication.name);
         holder.binding.tvMedDosage.setText(medication.dosage);
         holder.binding.tvMedTime.setText(medication.time);
+
+        // Botão Editar
+        holder.binding.btnEditMedication.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putInt("medicationId", medication.id);
+            Navigation.findNavController(v).navigate(R.id.action_home_to_addMedication, bundle);
+        });
+
+        // Botão Excluir
+        holder.binding.btnDeleteMedication.setOnClickListener(v -> {
+            new AlertDialog.Builder(v.getContext())
+                    .setTitle("Excluir Medicamento")
+                    .setMessage("Deseja realmente excluir " + medication.name + "?")
+                    .setPositiveButton("Sim", (dialog, which) -> {
+                        Executors.newSingleThreadExecutor().execute(() -> {
+                            AppDatabase.getInstance(v.getContext()).appDao().deleteMedication(medication);
+                            // O LiveData no Fragment vai atualizar a lista automaticamente
+                        });
+                        Toast.makeText(v.getContext(), "Excluído com sucesso", Toast.LENGTH_SHORT).show();
+                    })
+                    .setNegativeButton("Não", null)
+                    .show();
+        });
     }
 
     @Override

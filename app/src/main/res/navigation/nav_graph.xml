@@ -78,8 +78,13 @@
     <fragment
         android:id="@+id/addMedicationFragment"
         android:name="com.example.trabalhofinal.ui.AddMedicationFragment"
-        android:label="Adicionar Medicamento"
-        tools:layout="@layout/fragment_add_medication" />
+        android:label="Medicamento"
+        tools:layout="@layout/fragment_add_medication">
+        <argument
+            android:name="medicationId"
+            android:defaultValue="-1"
+            app:argType="integer" />
+    </fragment>
 
     <fragment
         android:id="@+id/historyFragment"

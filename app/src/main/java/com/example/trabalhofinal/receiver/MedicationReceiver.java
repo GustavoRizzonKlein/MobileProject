@@ -7,39 +7,39 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-
+import android.util.Log;
 import androidx.core.app.NotificationCompat;
-
 import com.example.trabalhofinal.MainActivity;
-import com.example.trabalhofinal.R;
 
 public class MedicationReceiver extends BroadcastReceiver {
-
-    private static final String CHANNEL_ID = "medication_channel";
-
     @Override
     public void onReceive(Context context, Intent intent) {
         String name = intent.getStringExtra("medicationName");
-        int id = intent.getIntExtra("medicationId", 0);
+        int id = intent.getIntExtra("medicationId", (int) System.currentTimeMillis());
 
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        Log.d("MED_DEBUG", "Alarme DISPARADO para: " + name);
+
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        String channelId = "medication_final_channel";
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Lembretes de Medicamentos", NotificationManager.IMPORTANCE_HIGH);
-            notificationManager.createNotificationChannel(channel);
+            NotificationChannel channel = new NotificationChannel(channelId, "Lembretes de Remédios", NotificationManager.IMPORTANCE_HIGH);
+            channel.enableVibration(true);
+            if (manager != null) manager.createNotificationChannel(channel);
         }
 
         Intent mainIntent = new Intent(context, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, id, mainIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pi = PendingIntent.getActivity(context, id, mainIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
                 .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
                 .setContentTitle("Hora do Remédio!")
                 .setContentText("Está na hora de tomar: " + name)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .setAutoCancel(true)
-                .setContentIntent(pendingIntent);
+                .setContentIntent(pi);
 
-        notificationManager.notify(id, builder.build());
+        if (manager != null) manager.notify(id, builder.build());
     }
 }

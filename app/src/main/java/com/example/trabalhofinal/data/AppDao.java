@@ -2,6 +2,7 @@ package com.example.trabalhofinal.data;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
@@ -18,6 +19,15 @@ public interface AppDao {
 
     @Insert
     long insertMedication(Medication medication);
+
+    @Update
+    void updateMedication(Medication medication);
+
+    @Delete
+    void deleteMedication(Medication medication);
+
+    @Query("SELECT * FROM medications WHERE id = :id LIMIT 1")
+    Medication getMedicationById(int id);
 
     @Query("SELECT * FROM medications")
     LiveData<List<Medication>> getAllMedications();
