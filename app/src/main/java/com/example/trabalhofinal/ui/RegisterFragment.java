@@ -1,5 +1,6 @@
 package com.example.trabalhofinal.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,8 @@ import androidx.navigation.Navigation;
 import com.example.trabalhofinal.data.AppDatabase;
 import com.example.trabalhofinal.data.User;
 import com.example.trabalhofinal.databinding.FragmentRegisterBinding;
+
+import java.util.concurrent.Executors;
 
 public class RegisterFragment extends Fragment {
 
@@ -31,9 +34,9 @@ public class RegisterFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         binding.btnRegister.setOnClickListener(v -> {
-            String name = binding.etName.getText().toString();
-            String email = binding.etEmail.getText().toString();
-            String password = binding.etPassword.getText().toString();
+            String name = binding.etName.getText().toString().trim();
+            String email = binding.etEmail.getText().toString().trim();
+            String password = binding.etPassword.getText().toString().trim();
             String userType = binding.rbSenior.isChecked() ? "Idoso" : "Familiar";
 
             if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
@@ -41,15 +44,23 @@ public class RegisterFragment extends Fragment {
                 return;
             }
 
-            User user = new User();
-            user.name = name;
-            user.email = email;
-            user.password = password;
-            user.userType = userType;
+            Context context = requireContext().getApplicationContext();
+            Executors.newSingleThreadExecutor().execute(() -> {
+                User user = new User();
+                user.name = name;
+                user.email = email;
+                user.password = password;
+                user.userType = userType;
 
-            AppDatabase.getInstance(requireContext()).appDao().insertUser(user);
-            Toast.makeText(requireContext(), "Usuário cadastrado com sucesso!", Toast.LENGTH_SHORT).show();
-            Navigation.findNavController(view).popBackStack();
+                AppDatabase.getInstance(context).appDao().insertUser(user);
+                
+                if (isAdded()) {
+                    requireActivity().runOnUiThread(() -> {
+                        Toast.makeText(context, "Usuário cadastrado com sucesso!", Toast.LENGTH_SHORT).show();
+                        Navigation.findNavController(view).popBackStack();
+                    });
+                }
+            });
         });
     }
 

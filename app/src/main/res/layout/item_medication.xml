@@ -11,57 +11,75 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:padding="16dp">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvMedName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Medicamento"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvMedDosage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dosagem"
+                    android:textColor="@android:color/darker_gray" />
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/tvMedName"
+                android:id="@+id/tvMedTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Medicamento"
+                android:layout_marginEnd="8dp"
+                android:text="08:00"
+                android:textColor="@color/primary"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tvMedDosage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Dosagem"
-                android:textColor="@android:color/darker_gray" />
+            <ImageButton
+                android:id="@+id/btnEditMedication"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_edit"
+                app:tint="@color/primary" />
+
+            <ImageButton
+                android:id="@+id/btnDeleteMedication"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_delete"
+                app:tint="#FF5252" />
+
         </LinearLayout>
 
         <TextView
-            android:id="@+id/tvMedTime"
-            android:layout_width="wrap_content"
+            android:id="@+id/tvMedInstructions"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:text="08:00"
-            android:textColor="@color/design_default_color_primary"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <ImageButton
-            android:id="@+id/btnEditMedication"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@android:drawable/ic_menu_edit"
-            app:tint="@color/design_default_color_primary" />
-
-        <ImageButton
-            android:id="@+id/btnDeleteMedication"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@android:drawable/ic_menu_delete"
-            app:tint="#FF5252" />
+            android:layout_marginTop="8dp"
+            android:text="Instruções: Tomar com água após o café."
+            android:textSize="14sp"
+            android:textColor="#555555"
+            android:fontStyle="italic"
+            android:visibility="gone" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

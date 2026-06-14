@@ -34,7 +34,14 @@ public class HistoryFragment extends Fragment {
         binding.rvHistory.setAdapter(adapter);
 
         AppDatabase.getInstance(requireContext()).appDao().getHistory().observe(getViewLifecycleOwner(), historyList -> {
-            adapter.setHistoryList(historyList);
+            if (historyList == null || historyList.isEmpty()) {
+                binding.emptyHistoryState.setVisibility(View.VISIBLE);
+                binding.rvHistory.setVisibility(View.GONE);
+            } else {
+                binding.emptyHistoryState.setVisibility(View.GONE);
+                binding.rvHistory.setVisibility(View.VISIBLE);
+                adapter.setHistoryList(historyList);
+            }
         });
     }
 

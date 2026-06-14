@@ -21,6 +21,14 @@
             android:name="com.example.trabalhofinal.receiver.MedicationReceiver"
             android:exported="false" />
 
+        <receiver
+            android:name="com.example.trabalhofinal.receiver.BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name="com.example.trabalhofinal.MainActivity"
             android:exported="true">

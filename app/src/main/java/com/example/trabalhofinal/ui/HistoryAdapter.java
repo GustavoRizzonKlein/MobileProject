@@ -1,5 +1,6 @@
 package com.example.trabalhofinal.ui;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -39,6 +40,15 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         holder.binding.tvHistName.setText(history.medicationName);
         holder.binding.tvHistStatus.setText(history.status);
         holder.binding.tvHistTime.setText(dateFormat.format(new Date(history.confirmationTime)));
+
+        // Easy function: Color coding based on status
+        if ("Tomado".equalsIgnoreCase(history.status)) {
+            holder.binding.tvHistStatus.setTextColor(Color.parseColor("#388E3C")); // Green
+        } else if ("Pulado".equalsIgnoreCase(history.status)) {
+            holder.binding.tvHistStatus.setTextColor(Color.parseColor("#D32F2F")); // Red
+        } else {
+            holder.binding.tvHistStatus.setTextColor(Color.GRAY);
+        }
     }
 
     @Override

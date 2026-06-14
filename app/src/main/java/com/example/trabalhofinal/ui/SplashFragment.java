@@ -1,5 +1,7 @@
 package com.example.trabalhofinal.ui;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -26,10 +28,16 @@ public class SplashFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Simulate loading and check if user is logged in
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             if (isAdded()) {
-                Navigation.findNavController(view).navigate(R.id.action_splash_to_login);
+                SharedPreferences prefs = requireActivity().getSharedPreferences("MedCarePrefs", Context.MODE_PRIVATE);
+                String email = prefs.getString("user_email", null);
+                
+                if (email != null) {
+                    Navigation.findNavController(view).navigate(R.id.action_splash_to_home);
+                } else {
+                    Navigation.findNavController(view).navigate(R.id.action_splash_to_login);
+                }
             }
         }, 2000);
     }

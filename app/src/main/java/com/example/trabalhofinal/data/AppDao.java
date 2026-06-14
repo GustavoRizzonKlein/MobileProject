@@ -32,6 +32,9 @@ public interface AppDao {
     @Query("SELECT * FROM medications")
     LiveData<List<Medication>> getAllMedications();
 
+    @Query("SELECT * FROM medications")
+    List<Medication> getAllMedicationsSync();
+
     @Insert
     void insertHistory(History history);
 

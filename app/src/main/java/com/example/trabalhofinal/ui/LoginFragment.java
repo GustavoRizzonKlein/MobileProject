@@ -1,5 +1,7 @@
 package com.example.trabalhofinal.ui;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,8 @@ import com.example.trabalhofinal.R;
 import com.example.trabalhofinal.data.AppDatabase;
 import com.example.trabalhofinal.data.User;
 import com.example.trabalhofinal.databinding.FragmentLoginBinding;
+
+import java.util.concurrent.Executors;
 
 public class LoginFragment extends Fragment {
 
@@ -32,21 +36,33 @@ public class LoginFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         binding.btnLogin.setOnClickListener(v -> {
-            String email = binding.etEmail.getText().toString();
-            String password = binding.etPassword.getText().toString();
+            String email = binding.etEmail.getText().toString().trim();
+            String password = binding.etPassword.getText().toString().trim();
 
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(requireContext(), "Preencha todos os campos", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Simple login logic using Room
-            User user = AppDatabase.getInstance(requireContext()).appDao().login(email, password);
-            if (user != null) {
-                Navigation.findNavController(view).navigate(R.id.action_login_to_home);
-            } else {
-                Toast.makeText(requireContext(), "Email ou senha incorretos", Toast.LENGTH_SHORT).show();
-            }
+            Context context = requireContext().getApplicationContext();
+            Executors.newSingleThreadExecutor().execute(() -> {
+                User user = AppDatabase.getInstance(context).appDao().login(email, password);
+                
+                if (isAdded()) {
+                    requireActivity().runOnUiThread(() -> {
+                        if (user != null) {
+                            // Save session
+                            SharedPreferences prefs = requireActivity().getSharedPreferences("MedCarePrefs", Context.MODE_PRIVATE);
+                            prefs.edit().putString("user_email", user.email).apply();
+                            prefs.edit().putString("user_name", user.name).apply();
+
+                            Navigation.findNavController(view).navigate(R.id.action_login_to_home);
+                        } else {
+                            Toast.makeText(requireContext(), "Email ou senha incorretos", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            });
         });
 
         binding.tvRegister.setOnClickListener(v -> 

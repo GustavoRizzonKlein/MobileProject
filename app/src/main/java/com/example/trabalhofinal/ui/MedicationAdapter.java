@@ -3,6 +3,7 @@ package com.example.trabalhofinal.ui;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
@@ -43,6 +44,20 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
         holder.binding.tvMedDosage.setText(medication.dosage);
         holder.binding.tvMedTime.setText(medication.time);
 
+        // Function: Show instructions if available
+        if (medication.instructions != null && !medication.instructions.isEmpty()) {
+            holder.binding.tvMedInstructions.setText("Dica: " + medication.instructions);
+            holder.binding.tvMedInstructions.setVisibility(View.VISIBLE);
+        } else {
+            holder.binding.tvMedInstructions.setVisibility(View.GONE);
+        }
+
+        // Click on the card to navigate to details/edit (or just keep the buttons)
+        holder.itemView.setOnClickListener(v -> {
+            // Optional: Toggle instructions visibility on click if we wanted it to be expandable
+            // For now, let's just make it always visible if present for elderly accessibility.
+        });
+
         // Botão Editar
         holder.binding.btnEditMedication.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
@@ -58,7 +73,6 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
                     .setPositiveButton("Sim", (dialog, which) -> {
                         Executors.newSingleThreadExecutor().execute(() -> {
                             AppDatabase.getInstance(v.getContext()).appDao().deleteMedication(medication);
-                            // O LiveData no Fragment vai atualizar a lista automaticamente
                         });
                         Toast.makeText(v.getContext(), "Excluído com sucesso", Toast.LENGTH_SHORT).show();
                     })

@@ -1,5 +1,6 @@
 package com.example.trabalhofinal.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,8 @@ import androidx.navigation.Navigation;
 import com.example.trabalhofinal.data.AppDatabase;
 import com.example.trabalhofinal.data.History;
 import com.example.trabalhofinal.databinding.FragmentConfirmMedicationBinding;
+
+import java.util.concurrent.Executors;
 
 public class ConfirmMedicationFragment extends Fragment {
 
@@ -48,15 +51,23 @@ public class ConfirmMedicationFragment extends Fragment {
     }
 
     private void saveHistory(String status) {
-        History history = new History();
-        history.medicationId = medicationId;
-        history.medicationName = medicationName;
-        history.status = status;
-        history.confirmationTime = System.currentTimeMillis();
+        Context context = requireContext().getApplicationContext();
+        Executors.newSingleThreadExecutor().execute(() -> {
+            History history = new History();
+            history.medicationId = medicationId;
+            history.medicationName = medicationName;
+            history.status = status;
+            history.confirmationTime = System.currentTimeMillis();
 
-        AppDatabase.getInstance(requireContext()).appDao().insertHistory(history);
-        Toast.makeText(requireContext(), "Registro salvo: " + status, Toast.LENGTH_SHORT).show();
-        Navigation.findNavController(requireView()).popBackStack();
+            AppDatabase.getInstance(context).appDao().insertHistory(history);
+            
+            if (isAdded()) {
+                requireActivity().runOnUiThread(() -> {
+                    Toast.makeText(context, "Registro salvo: " + status, Toast.LENGTH_SHORT).show();
+                    Navigation.findNavController(requireView()).popBackStack();
+                });
+            }
+        });
     }
 
     @Override
